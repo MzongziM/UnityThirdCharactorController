@@ -1,46 +1,49 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
 public class PlayMoveTest : MonoBehaviour
 {
     private static readonly int Speed = Animator.StringToHash("Speed");
     [SerializeField] private Animator animator;
-    
-    // [SerializeField] private float threshold = 0.1f;
-    // [SerializeField] private float forwardSpeed = 2.0f;
-    // [SerializeField] private float backSpeed = -1.5f;
-    // [SerializeField] private float currentSpeed;
-    // [SerializeField] private float targetSpeed = 0.0f;
-    // [SerializeField] private Vector3 movement = Vector3.zero;
+    [SerializeField] private Rigidbody rb;
+
+    [SerializeField] private float currentSpeed;
+    [SerializeField] private float targetSpeed;
 
     private void Start()
     {
-        if (animator == null)
-        {
-            animator = GetComponent<Animator>();
-        }
+        animator.SetFloat(Speed, 1 / animator.humanScale);
     }
 
-    // private void Update()
-    // {
-    //     Move();
-    // }
-    //
-    // private void Move()
-    // {
-    //     currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, 5* Time.deltaTime);
-    //     movement = new Vector3(0, 0, currentSpeed * Time.deltaTime);
-    //     transform.position += movement;
-    // }
+    private void Update()
+    {
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, Time.deltaTime * 5);
+        animator.SetFloat(Speed, currentSpeed);
+    }
+
+    private void OnAnimatorMove()
+    {
+        Move();
+    }
+
+    private void Move()
+    {
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, Time.deltaTime * 5);
+        animator.SetFloat(Speed, currentSpeed);
+        rb.velocity = new Vector3(animator.velocity.x, rb.velocity.y, animator.velocity.z);
+    }
 
     public void PlayerMove(InputAction.CallbackContext context)
     {
         var value = context.ReadValue<Vector2>().normalized;
-        animator.SetFloat(Speed, value.y);
+        // animator.SetFloat(Speed, value.y);
+        targetSpeed = value.y;
+    }
+
+    private void Reset()
+    {
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
     }
 }

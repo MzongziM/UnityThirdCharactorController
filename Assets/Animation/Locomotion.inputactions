@@ -28,7 +28,25 @@
                     "name": "Fire",
                     "type": "Button",
                     "id": "f2db60ac-49f1-425a-b168-98c2f6870741",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Run",
+                    "type": "Button",
+                    "id": "4e2853cc-3f6f-4540-8443-eba56da2d76d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Rifle",
+                    "type": "Button",
+                    "id": "86a2d5ee-a283-47fb-aabd-c196855f2a37",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -252,6 +270,28 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ed2896d-24ea-4d1a-a17b-90cd9b87025c",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cec187ff-b10d-4b69-9aa6-3a2858071ed3",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Rifle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

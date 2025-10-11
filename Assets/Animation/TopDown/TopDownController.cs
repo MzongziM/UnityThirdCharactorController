@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
 public class TopDownController : MonoBehaviour
@@ -47,6 +49,20 @@ public class TopDownController : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(SetInjured());
         }
+    }
+
+    [SerializeField] private Transform rightHandTrans;
+    [SerializeField] private Transform leftHandGrip;
+    private void OnAnimatorIK(int layerIndex)
+    {
+        _animator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandGrip.position);
+        _animator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandGrip.rotation);
+        _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+        _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+        _animator.SetIKPosition(AvatarIKGoal.RightHand, rightHandTrans.position);
+        _animator.SetIKRotation(AvatarIKGoal.RightHand, rightHandTrans.rotation);
+        _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+        _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
     }
 
     private IEnumerator SetInjured()

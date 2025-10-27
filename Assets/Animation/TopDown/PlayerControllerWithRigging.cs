@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
@@ -45,22 +46,41 @@ public class PlayerControllerWithRigging : MonoBehaviour
         PlayerMove();
         if (Keyboard.current.rKey.wasReleasedThisFrame)
         {
-            isInjured = true;
+            isInjured = !isInjured;
             StopAllCoroutines();
-            StartCoroutine(SetInjured());
+            if (isInjured)
+            {
+                StartCoroutine(SetInjured(0, 1));
+            }
+            else
+            {
+                StartCoroutine(SetInjured(1, 0));
+            }
         }
     }
 
-    private IEnumerator SetInjured()
+    private IEnumerator SetInjured(float start, float end)
     {
         var _timer = 0f;
         while (_timer < 1)
         {
-            var newTarget = Mathf.Lerp(0, 1, _timer);
+            var newTarget = Mathf.Lerp(start, end, _timer);
             _animator.SetLayerWeight(_injuredLayerIndex, newTarget);
             _timer += Time.deltaTime;
             _timer = Mathf.Clamp(_timer, 0, 1);
             yield return null;
+        }
+    }
+
+
+    public void GetPlayerAim(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            _animator.SetBool("isAiming", true);
+        }else if (context.canceled)
+        {
+            _animator.SetBool("isAiming", false);
         }
     }
 
@@ -81,12 +101,15 @@ public class PlayerControllerWithRigging : MonoBehaviour
         }
     }
 
+    [SerializeField] private Rig handRig;
+
     public void GetArmedRifle(InputAction.CallbackContext context)
     {
         if (context.canceled)
         {
             armedRifle = !armedRifle;
             _animator.SetBool(Rifle, armedRifle);
+            handRig.weight = armedRifle ? 1 : 0;
         }
     }
 
@@ -100,7 +123,8 @@ public class PlayerControllerWithRigging : MonoBehaviour
         if (_playerInputVec.Equals(Vector2.zero)) return;
         _playerMovement = new Vector3(_playerInputVec.x, 0f, _playerInputVec.y); // Y is zero
         var targetRotation = Quaternion.LookRotation(_playerMovement, Vector3.up);
-        _transform.rotation = Quaternion.RotateTowards(_transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
+        _transform.rotation =
+            Quaternion.RotateTowards(_transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
         // _transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime * _playerInputVec.x);
     }
 
@@ -112,6 +136,7 @@ public class PlayerControllerWithRigging : MonoBehaviour
         {
             targetSpeed *= injuredScale;
         }
+
         currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, Time.deltaTime * maxDistanceDelta);
         _animator.SetFloat(PlayerInputVector, currentSpeed);
     }
